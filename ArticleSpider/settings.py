@@ -9,6 +9,8 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import os
+
 BOT_NAME = 'ArticleSpider'
 
 SPIDER_MODULES = ['ArticleSpider.spiders']
@@ -66,9 +68,21 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
-#}
+# 让你实例化的 item 直接传到 pipelines 下面的配置是你实例化对象 经过的处理类 数字表示处理顺序 数字越小 越早处理
+ITEM_PIPELINES = {
+   'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
+   # 'scrapy.pipelines.images.ImagesPipeline': 1,
+   'ArticleSpider.pipelines.ArticleImagePipeline': 1,
+}
+# 告诉 scrapy img-url 对应字段
+IMAGES_URLS_FIELD = 'front_image_url'
+# 下载图片保存路径
+project_dir = os.path.abspath(os.path.dirname(__file__))
+IMAGES_STORE = os.path.join(project_dir, 'images')
+# 设置下载图片最小宽高
+# IMAGES_MIN_HEIGHT = 100
+# IMAGES_MIN_WIDTH = 100
+
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
