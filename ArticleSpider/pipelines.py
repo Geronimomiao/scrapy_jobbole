@@ -116,9 +116,9 @@ class MysqlTwistedPipline(object):
     def do_insert(self, cursor, item):
         # 具体插入逻辑
         insert_sql = '''
-                    insert into article (title, url, create_date, fav_nums, url_object_id) values (%s, %s, %s ,%s, %s)
+                    insert into article (title, url, create_date, fav_nums, url_object_id, tags, praise_nums, comment_nums, front_image_url, front_image_path) values (%s, %s, %s ,%s, %s, %s, %s, %s, %s, %s)
                 '''
-        list = [item["title"], item["url"], item["create_date"], item["fav_nums"], item["url_object_id"]]
+        list = [item["title"], item["url"], item["create_date"], item["fav_nums"], item["url_object_id"], item["tags"], item["praise_nums"], item["comment_nums"], item["front_image_url"][0], item["front_image_path"]]
         cursor.execute(insert_sql, list)
         # 此处无需 conn.commit scrapy 自动帮你提交了
 
