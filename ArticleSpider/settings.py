@@ -72,7 +72,7 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
    'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
    # 'scrapy.pipelines.images.ImagesPipeline': 1,
-   # 'ArticleSpider.pipelines.ArticleImagePipeline': 1,
+   'ArticleSpider.pipelines.ArticleImagePipeline': 1,
    # 'ArticleSpider.pipelines.JsonExporterPiple': 2,
    # 'ArticleSpider.pipelines.MysqlPipeline': 3,
    'ArticleSpider.pipelines.MysqlTwistedPipline': 3,

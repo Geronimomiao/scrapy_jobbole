@@ -15,13 +15,15 @@ from scrapy.pipelines.images import ImagesPipeline
 from scrapy.exporters import JsonItemExporter
 from twisted.enterprise import adbapi
 
+
 # 定制自己的 pipelines 重载里面的方法
 class ArticleImagePipeline(ImagesPipeline):
     def item_completed(self, results, item, info):
-        for flag, value in results:
-            # 这里你传进来时候就只有一张图片
-            image_file_path = value['path']
-        item["front_image_path"] = image_file_path
+        if "front_image_url" in item:
+            for flag, value in results:
+                # 这里你传进来时候就只有一张图片
+                image_file_path = value['path']
+            item["front_image_path"] = image_file_path
         # 因为还有下一个 pipeline 会对 item 进行处理
         return item
 
@@ -118,6 +120,8 @@ class MysqlTwistedPipline(object):
                 '''
         list = [item["title"], item["url"], item["create_date"], item["fav_nums"], item["url_object_id"]]
         cursor.execute(insert_sql, list)
+        # 此处无需 conn.commit scrapy 自动帮你提交了
+
 
 
 
