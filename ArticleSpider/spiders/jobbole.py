@@ -4,6 +4,8 @@ import datetime
 from scrapy.http import Request
 from urllib import parse
 from scrapy.loader import ItemLoader
+from scrapy.xlib.pydispatch import dispatcher
+from scrapy import signals
 import re
 
 from ArticleSpider.items import JobBoleArticleItem, ArticleItemLoader
@@ -12,9 +14,26 @@ from ArticleSpider.utils.common import get_md5
 class JobboleSpider(scrapy.Spider):
     name = 'jobbole'
     allowed_domains = ['blog.jobbole.com']
-    start_urls = ['http://blog.jobbole.com/all-posts/']
+    start_urls = ['http://blog.jobbole.com/all-posts']
+
+    # 收集 伯乐在线 所以 404 的 url 以及 404 页面数
+    # 不写这行代码 会自动过滤 404 页面
+    handle_httpstatus_list = [404]
+
+    def __init__(self):
+        self.fail_urls = []
+        # 将 定义的 函数 和 信号 绑定到一起
+        dispatcher.connect(self.handle_spider_closed, signals.spider_closed)
+
+    def handle_spider_closed(self, spider, reason):
+        # 当 spider 结束 后 将 fail_urls 拼成 字符串 存到 stats 中
+        self.crawler.stats.set_value('failed_urls', ','.join(self.fail_urls))
+
 
     def parse(self, response):
+        if response.status == 404:
+            self.fail_urls.append(response.url)
+            self.crawler.stats.inc_value('failed_url')
 
         '''
         1. 获取文章列表页中 文章 url 并交给 scrapy 进行解析
