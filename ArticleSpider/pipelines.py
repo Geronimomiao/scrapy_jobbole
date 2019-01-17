@@ -123,6 +123,9 @@ class MysqlTwistedPipline(object):
         # 此处无需 conn.commit scrapy 自动帮你提交了
 
 
-
-
+class ElasticsearchPipeline(object):
+    # 将数据写入到 es 中
+    def process_item(self, item, spider):
+        # 将item转化为es数据
+        pass
 
