@@ -15,6 +15,8 @@ from scrapy.pipelines.images import ImagesPipeline
 from scrapy.exporters import JsonItemExporter
 from twisted.enterprise import adbapi
 
+from ArticleSpider.models.es_types import ArticleType
+
 
 # 定制自己的 pipelines 重载里面的方法
 class ArticleImagePipeline(ImagesPipeline):
@@ -127,5 +129,8 @@ class ElasticsearchPipeline(object):
     # 将数据写入到 es 中
     def process_item(self, item, spider):
         # 将item转化为es数据
-        pass
+        item.save_to_es()
+
+        return item
+
 

@@ -11,6 +11,7 @@ from scrapy.loader.processors import MapCompose, TakeFirst, Join
 
 import re
 
+from ArticleSpider.models.es_types import ArticleType
 # 定义一些对字段处理的方法
 def get_nums(value):
     match_re = re.match(r".*?(\d+).*", value)
@@ -76,5 +77,22 @@ class JobBoleArticleItem(scrapy.Item):
     # 记录存放的本地路径
     front_image_path = scrapy.Field()
 
+    def save_to_es(self):
+        article = ArticleType()
+        article.title = self['title']
+        article.content = self["content"]
+        article.front_image_url = self["front_image_url"]
+        if "front_image_path" in self:
+            article.front_image_path = self["front_image_path"]
+        article.praise_nums = self["praise_nums"]
+        article.fav_nums = self["fav_nums"]
+        article.comment_nums = self["comment_nums"]
+        article.url = self["url"]
+        article.tags = remove_comment_tags(self["tags"])
+        article.meta.id = self["url_object_id"]
+
+        article.save()
+
+        return
 
 

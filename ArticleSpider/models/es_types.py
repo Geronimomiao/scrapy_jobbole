@@ -12,10 +12,12 @@
 """
 __author__ = 'wsm'
 from datetime import datetime
-from elasticsearch_dsl import Document, Date, Nested, Boolean, \
-    analyzer, InnerDoc, Completion, Keyword, Text, Integer
+from elasticsearch_dsl import DocType, Date, Nested, Boolean, \
+    analyzer, Completion, Keyword, Text, Integer
+from elasticsearch_dsl.connections import connections
+connections.create_connection(hosts=["localhost"])
 
-class ArticleType(Document):
+class ArticleType(DocType):
     # 伯乐在线文章类型
     title = Text(analyzer="ik_max_word")
     url = Keyword()
@@ -28,6 +30,9 @@ class ArticleType(Document):
     front_image_url = Keyword()
     front_image_path = Keyword()
 
+    class Meta:
+        index = 'jobbole'
+        doc_type = "article"
 
 if __name__ == '__main__':
-    pass
+    ArticleType.init()
